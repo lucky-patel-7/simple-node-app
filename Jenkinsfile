@@ -8,6 +8,12 @@ pipeline {
      environment {
             CI = 'true'
         }
+    options {
+    docker.withRun('-w /home/jenkins') {
+        // do nothing
+    }
+}
+
     stages {
         stage('Build') {
             steps {
