@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'node:16-alpine'
-            args '-p 3000:3000 -v $PWD:/app -w /app'
+             args '-p 3000:3000 -v $WORKSPACE:/app -w /app'
         }
     }
     environment {
