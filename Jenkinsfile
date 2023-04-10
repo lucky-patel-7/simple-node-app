@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'node:6-alpine'
-           args '-d -t -p 3000:3000 --priviledged -w C:/ProgramData/Jenkins/.jenkins/workspace/test/ -v'
+           args '-d -t -p 3000:3000 -w C:/ProgramData/Jenkins/.jenkins/workspace/test/ -v'
         }
     }
      environment {
