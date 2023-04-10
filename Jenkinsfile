@@ -1,13 +1,14 @@
 pipeline {
     agent {
         docker {
-            image 'node:6-alpine'
-           args '-d -t -p 3000:3000 -w C:/ProgramData/Jenkins/.jenkins/workspace/test/ -v'
+            image 'node:16-alpine'
+            args '-p 3000:3000'
         }
     }
-     environment {
-            CI = 'true'
-        }
+    environment {
+        CI = 'true'
+        WORKSPACE = "$PWD"
+    }
     stages {
         stage('Build') {
             steps {
@@ -15,17 +16,26 @@ pipeline {
             }
         }
         stage('Test') {
-                    steps {
-                        sh './jenkins/scripts/test.sh'
-                    }
+            agent {
+                docker {
+                    image 'mytestimage:latest'
                 }
-                stage('Deliver') {
-                            steps {
-                                sh './jenkins/scripts/deliver.sh'
-                                input message: 'Finished using the web site? (Click "Proceed" to continue)'
-                                sh './jenkins/scripts/kill.sh'
-                            }
-                        }
-
+            }
+            steps {
+                sh 'npm test'
+            }
+        }
+        stage('Deliver') {
+            agent {
+                docker {
+                    image 'mydeliveryimage:latest'
+                }
+            }
+            steps {
+                sh 'deliver.sh'
+                input message: 'Finished using the web site? (Click "Proceed" to continue)'
+                sh 'kill.sh'
+            }
+        }
     }
 }
